@@ -3,7 +3,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-green)
 ![Last Updated](https://img.shields.io/badge/Last%20Updated-2026--03--09-orange)
 
-Portfolio-grade battery health analytics and prognostics project using NASA PCoE Li-ion aging data to support EV range confidence and predictive maintenance.
+Battery health analytics and prognostics project using NASA PCoE Li-ion aging data to support EV range confidence and predictive maintenance.
 
 ## Table of Contents
 - [Motivation](#motivation)
