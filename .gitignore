@@ -1,22 +1,35 @@
-# Python
+# Python cache
 __pycache__/
-*.py[cod]
-*.so
+*.pyc
+.pytest_cache/
+
+# Model artifacts
+*.pkl
+*.joblib
+*.h5
+*.pt
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Editor/system
+.history/
+.DS_Store
 
 # Environments
 .env
 .venv/
 env/
 
-# Jupyter
-.ipynb_checkpoints/
-
-# Data and model artifacts
+# Dataset artifacts
+*.mat
 data/raw/*
 !data/raw/.gitkeep
+data/interim/*
+!data/interim/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Local model folder contents
 models/*
 !models/.gitkeep
-*.mat
-
-# macOS
-.DS_Store.history/
