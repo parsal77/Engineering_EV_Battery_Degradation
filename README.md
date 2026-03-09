@@ -63,6 +63,7 @@ Engineering_EV_Battery_Degradation
 │   ├── problem_definition.md
 │   ├── splitting_strategy.md
 │   ├── feature_rationale.md
+│   ├── feature_leakage_audit.md
 │   ├── results_summary.md
 │   └── business_value.md
 │
@@ -104,6 +105,16 @@ conda activate ev_battery_degradation
 4. `notebooks/04_models.ipynb`
 5. `notebooks/05_interpretability.ipynb`
 
+## Reproducible Pipeline
+```bash
+make reproduce
+```
+
+Equivalent direct command:
+```bash
+python -m src.train --run-evaluation
+```
+
 ## Streamlit App
 ```bash
 streamlit run app/app.py
@@ -118,6 +129,24 @@ The app supports:
 See full benchmark table in:
 - `results/metrics.csv`
 - `reports/results_summary.md`
+
+### Reproducible Metrics Snapshot
+<!-- AUTO_METRICS_TABLE_START -->
+_Auto-generated from `results/metrics.csv`._
+
+| Model | Task | MAE | RMSE | R² |
+|---|---|---:|---:|---:|
+| Random Forest Regressor | RUL | 5.0915 | 6.3732 | 0.9624 |
+| XGBoost Regressor | RUL | 4.9354 | 6.3859 | 0.9623 |
+| Transformer Encoder | RUL | 7.9898 | 9.1193 | 0.9076 |
+| LSTM Neural Network | RUL | 29.6019 | 33.7142 | -0.2626 |
+| Linear Regression | SOH | 0.0998 | 0.1160 | 0.9998 |
+| XGBoost Regressor | SOH | 0.3677 | 0.5655 | 0.9945 |
+| Random Forest Regressor | SOH | 0.4084 | 0.7148 | 0.9913 |
+| Ridge Regression | SOH | 0.8853 | 0.9438 | 0.9847 |
+| CNN-BiLSTM | SOH | 1.6264 | 1.9431 | 0.9216 |
+| LSTM Neural Network | SOH | 6.2334 | 6.9414 | 0.0000 |
+<!-- AUTO_METRICS_TABLE_END -->
 
 ## Future Improvements
 - Physics-informed feature expansion

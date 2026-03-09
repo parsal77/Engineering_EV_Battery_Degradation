@@ -27,6 +27,10 @@ except ModuleNotFoundError:  # pragma: no cover - covered by runtime environment
     XGBRegressor = None
 
 RANDOM_SEED = 42
+LEAKAGE_FEATURE_EXCLUSIONS: dict[str, set[str]] = {
+    "SOH": {"capacity_Ah", "SOH"},
+    "RUL": {"RUL"},
+}
 
 
 def set_random_seed(seed: int = RANDOM_SEED) -> None:
@@ -85,6 +89,68 @@ def default_feature_columns(
     ]
 
 
+def leakage_exclusions_for_target(target_col: str) -> set[str]:
+    """Return forbidden feature names for a target to avoid leakage.
+
+    Parameters
+    ----------
+    target_col : str
+        Target variable name.
+
+    Returns
+    -------
+    set[str]
+        Feature names that should not be used for the target.
+    """
+
+    return set(LEAKAGE_FEATURE_EXCLUSIONS.get(target_col, set()))
+
+
+def validate_no_target_leakage(feature_columns: list[str], target_col: str) -> None:
+    """Validate that selected features do not contain leakage-prone columns.
+
+    Parameters
+    ----------
+    feature_columns : list[str]
+        Candidate model feature names.
+    target_col : str
+        Target variable name.
+
+    Raises
+    ------
+    ValueError
+        If leakage-prone columns are present in selected features.
+    """
+
+    forbidden = leakage_exclusions_for_target(target_col=target_col)
+    overlap = set(feature_columns).intersection(forbidden)
+    if overlap:
+        raise ValueError(
+            "Leakage risk detected. Remove forbidden features for "
+            f"target '{target_col}': {sorted(overlap)}"
+        )
+
+
+def soh_feature_columns(df: pd.DataFrame) -> list[str]:
+    """Return leakage-safe feature columns for SOH modeling.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Feature DataFrame.
+
+    Returns
+    -------
+    list[str]
+        SOH-safe feature list.
+    """
+
+    return default_feature_columns(
+        df=df,
+        exclude=leakage_exclusions_for_target("SOH"),
+    )
+
+
 def prepare_cross_battery_data(
     df: pd.DataFrame,
     target_col: str,
@@ -111,7 +177,15 @@ def prepare_cross_battery_data(
     """
 
     sorted_df = df.sort_values(["battery_id", "cycle_number"]).reset_index(drop=True)
-    features = feature_columns or default_feature_columns(sorted_df)
+    if feature_columns is None:
+        features = default_feature_columns(
+            sorted_df,
+            exclude=leakage_exclusions_for_target(target_col),
+        )
+    else:
+        features = feature_columns
+
+    validate_no_target_leakage(features, target_col=target_col)
 
     train_df = sorted_df[sorted_df["battery_id"] != test_battery].copy()
     test_df = sorted_df[sorted_df["battery_id"] == test_battery].copy()
@@ -811,12 +885,12 @@ def run_soh_benchmark(
     """
 
     task = "SOH"
-    soh_feature_columns = default_feature_columns(feature_df, exclude={"capacity_Ah"})
+    feature_cols = soh_feature_columns(feature_df)
     prepared = prepare_cross_battery_data(
         feature_df,
         target_col="SOH",
         test_battery=test_battery,
-        feature_columns=soh_feature_columns,
+        feature_columns=feature_cols,
     )
 
     metrics_records: list[dict[str, float | str]] = []

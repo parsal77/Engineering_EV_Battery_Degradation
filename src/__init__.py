@@ -1,16 +1,5 @@
 """EV Battery Degradation package."""
 
-from src import (
-    data_loader,
-    evaluate,
-    evaluation,
-    features,
-    models,
-    preprocessing,
-    train,
-    visualisation,
-)
-
 __all__ = [
     "data_loader",
     "evaluation",
@@ -18,6 +7,7 @@ __all__ = [
     "features",
     "models",
     "preprocessing",
+    "reporting",
     "train",
     "visualisation",
 ]
