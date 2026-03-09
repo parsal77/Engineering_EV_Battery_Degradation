@@ -55,7 +55,9 @@ Engineering_EV_Battery_Degradation
 ├── src
 │   ├── features.py
 │   ├── train.py
-│   └── evaluate.py
+│   ├── evaluate.py
+│   ├── reporting.py
+│   └── leakage_audit.py
 │
 ├── reports
 │   ├── design.md
@@ -78,7 +80,8 @@ Engineering_EV_Battery_Degradation
 │   └── metrics.csv
 │
 ├── tests
-│   └── test_preprocessing.py
+│   ├── test_preprocessing.py
+│   └── test_leakage_and_reporting.py
 │
 └── app
     └── app.py
@@ -98,14 +101,9 @@ conda env create -f environment.yml
 conda activate ev_battery_degradation
 ```
 
-## Run Order
-1. `notebooks/01_eda.ipynb`
-2. `notebooks/02_baseline_model.ipynb`
-3. `notebooks/03_feature_engineering.ipynb`
-4. `notebooks/04_models.ipynb`
-5. `notebooks/05_interpretability.ipynb`
-
 ## Reproducible Pipeline
+Canonical execution path:
+
 ```bash
 make reproduce
 ```
@@ -114,6 +112,25 @@ Equivalent direct command:
 ```bash
 python -m src.train --run-evaluation
 ```
+
+Metrics/report synchronization path:
+```bash
+python -m src.evaluate
+```
+
+This command regenerates:
+- `results/metrics.csv` (single source of truth)
+- `reports/results_summary.md`
+- `reports/feature_leakage_audit.md`
+- README metrics snapshot block
+- `results/pred_vs_actual.png`
+
+## Exploratory Notebooks (Supplementary)
+1. `notebooks/01_eda.ipynb`
+2. `notebooks/02_baseline_model.ipynb`
+3. `notebooks/03_feature_engineering.ipynb`
+4. `notebooks/04_models.ipynb`
+5. `notebooks/05_interpretability.ipynb`
 
 ## Streamlit App
 ```bash
@@ -126,6 +143,8 @@ The app supports:
 - RUL prediction and plot visualization
 
 ## Results
+`results/metrics.csv` is the only authoritative metrics source. All README/report tables are generated from it.
+
 See full benchmark table in:
 - `results/metrics.csv`
 - `reports/results_summary.md`
@@ -144,8 +163,8 @@ _Auto-generated from `results/metrics.csv`._
 | XGBoost Regressor | SOH | 0.3677 | 0.5655 | 0.9945 |
 | Random Forest Regressor | SOH | 0.4084 | 0.7148 | 0.9913 |
 | Ridge Regression | SOH | 0.8853 | 0.9438 | 0.9847 |
-| CNN-BiLSTM | SOH | 1.6264 | 1.9431 | 0.9216 |
-| LSTM Neural Network | SOH | 6.2334 | 6.9414 | 0.0000 |
+| CNN-BiLSTM | SOH | 2.7868 | 3.4655 | 0.7508 |
+| LSTM Neural Network | SOH | 6.1631 | 7.1446 | -0.0594 |
 <!-- AUTO_METRICS_TABLE_END -->
 
 ## Future Improvements

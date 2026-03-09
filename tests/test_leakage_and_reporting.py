@@ -8,6 +8,7 @@ import pandas as pd
 import pytest
 
 from src.models import prepare_cross_battery_data
+from src.leakage_audit import build_feature_leakage_audit
 from src.reporting import (
     AUTO_METRICS_END,
     AUTO_METRICS_START,
@@ -129,3 +130,12 @@ def test_results_summary_builds_from_metrics_source() -> None:
     assert "Single source of truth" in summary
     assert "Linear Regression" in summary
     assert "6.0000" in summary
+
+
+def test_feature_leakage_audit_contains_ablation_section() -> None:
+    """Leakage audit should contain quantitative ablation evidence section."""
+
+    df = _mock_feature_df()
+    report_text = build_feature_leakage_audit(feature_df=df, test_battery="B0018")
+    assert "Ablation Evidence" in report_text
+    assert "Forbidden overlap in active SOH features: `[]`" in report_text

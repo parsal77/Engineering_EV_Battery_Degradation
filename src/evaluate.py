@@ -10,6 +10,7 @@ import pandas as pd
 
 from src.data_loader import project_root
 from src.evaluation import regression_metrics, save_metrics
+from src.leakage_audit import write_feature_leakage_audit
 from src.models import run_rul_benchmark, run_soh_benchmark
 from src.reporting import update_readme_metrics_block, write_results_summary
 from src.visualisation import plot_actual_vs_predicted
@@ -159,6 +160,11 @@ def run_evaluation_pipeline(
     write_results_summary(
         metrics_df=metrics_df, output_path=resolved_reports_dir / "results_summary.md"
     )
+    write_feature_leakage_audit(
+        feature_df=feature_df,
+        output_path=resolved_reports_dir / "feature_leakage_audit.md",
+        test_battery=test_battery,
+    )
 
     best_rul = metrics_df[metrics_df["Task"] == "RUL"].sort_values("RMSE").iloc[0]
     best_rul_model_name = str(best_rul["Model"])
@@ -264,7 +270,10 @@ def main() -> None:
         update_readme=not args.skip_readme_update,
     )
 
-    print("Saved metrics to results/metrics.csv and refreshed reports/README blocks.")
+    print(
+        "Saved metrics to results/metrics.csv and refreshed "
+        "results_summary/feature_leakage_audit/README metrics block."
+    )
     print(metrics_df.to_string(index=False))
 
 

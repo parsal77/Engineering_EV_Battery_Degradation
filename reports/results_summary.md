@@ -14,8 +14,8 @@ _Single source of truth: `results/metrics.csv`._
 | XGBoost Regressor | SOH | 0.3677 | 0.5655 | 0.9945 |
 | Random Forest Regressor | SOH | 0.4084 | 0.7148 | 0.9913 |
 | Ridge Regression | SOH | 0.8853 | 0.9438 | 0.9847 |
-| CNN-BiLSTM | SOH | 1.6264 | 1.9431 | 0.9216 |
-| LSTM Neural Network | SOH | 6.2334 | 6.9414 | 0.0000 |
+| CNN-BiLSTM | SOH | 2.7868 | 3.4655 | 0.7508 |
+| LSTM Neural Network | SOH | 6.1631 | 7.1446 | -0.0594 |
 
 ## Baseline Comparison
 

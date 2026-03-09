@@ -5,6 +5,7 @@ __all__ = [
     "evaluation",
     "evaluate",
     "features",
+    "leakage_audit",
     "models",
     "preprocessing",
     "reporting",
