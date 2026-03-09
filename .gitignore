@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Environments
+.env
+.venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data and model artifacts
+data/raw/*
+!data/raw/.gitkeep
+models/*
+!models/.gitkeep
+*.mat
+
+# macOS
+.DS_Store
